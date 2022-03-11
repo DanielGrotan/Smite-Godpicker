@@ -1,0 +1,87 @@
+Arachne,Anubis,Bellona,Set,Tsukuyomi
+Awilix,Ymir,Artio,Kumbhakarna,Anubis,Ares
+Bakasura,Kali,He bo,Kuzenbo
+Bastet,Awilix,Nox,Apollo,Kumbhakarna,Ares,Artio
+Da Ji,Hel,Selena,Arachne
+Fenrir,Ares,Awilix,Poseidon,Heimdallr,Khepri
+Hun Batz,Da Ji,He bo
+Kali,Ares,Athena,Baron Samedi
+Loki,Heimdallr,Kumbhakarna,Set,Tsukuyomi
+Mercury,Arachne
+Ne Zha,Amaterasu,Baron Samedi,Bellona,Cabrakan,Cu Chulainn,Hades
+Nemesis,Arachne,Set,Anubis,Ullr
+Pele,Erlang Shen,Bellona,Osiris,Ymir,Anhur,Sylvanus
+Ratatoskr,Kumbhakarna,Freya,Cupid
+Ravana,Erlang Shen,Cabrakan,Cu Chulainn,Guan Yu,King Arthur
+Serqet,Susano,Fenrir,Awilix
+Set,Ao Kuang,Hades,Mercuramedi
+Chiron,Ah Muzen Cab,Artio,Hou Yi,Kumbhakarna
+Cupid,Arachne
+Danzaburou ,Hachiman,Apollo,Cupid,Hou Yi
+Hachiman,Anhur,Arachne,Anubis,Heimdallr,Izanami
+Heimdallr,Arachne
+Hou Yi,Cupid,Hachiman,Rama,Ullr
+Izanami,Ah Muzen Cab,Jing Wei,Thanatos
+Jing Wei,Hou Yi,Chernobog,Anhur,Cabrakan,Ymir
+Medusa,Ares,Artemis,Baron Samedi,Ao Kuang,Hercules
+Neith,Nox,Poseidon,Hercules,Loki,Bacchus,Khepri
+Rama,Apollo,Cupid,Rama,Anhur,Hachiman,Heimdallr
+Skadi,Cupid,Izanami,Neith
+Ullr,Anubis,Chaac,Kali
+Xbalanque,Apollo,Cernunnos,Artemis,Arachne,Bakasura,Hou Yi
+Charybdis,Anubis
+Achilles,Cu Chulainn,Scylla,Ao Kuang,Bakasura,Kali
+Amaterasu ,Chaac,Guan Yu,King Arthur
+Bellona,King Arthur,Agni,Change,Anubis,Sun Wukong
+Chaac,Odin,Osiris,Serqet
+Cu Chulainn,Tyr,Ao Kuang,Aphrodite
+Erlang Shen,Amaterasu,Cu Chulainn,Guan Yu,King Arthur
+Gilgamesh,Gilgamesh,Hou Yi
+Guan Yu,Cabrakan,Cthuldu,Cu Chulainn,King Arthur
+Hercules,Chaac,Change
+Horus,Ares,King Arthur,Achilles,Amaterasu,Cu Chulainn,Guan Yu
+King Arthur,Achilles,Amaterasu,Cu Chulainn,Guan Yu
+Mulan,Achilles,Amaterasu,Cu Chulainn,Guan Yu,King Arthur
+Nike,Chaac,Erlang Shen,Kuzenbo
+Odin,King Arthur,Cu Chulainn
+Osiris,Bacchus,Baron Samedi,Bellona,Sobek
+Sun Wukong,Mulan,King Arthur
+Tyr,King Arthur,Cu Chulainn,Guan Yu,Nike,Odin
+Vamana,Bacchus,Bakasura
+Agni,Ao Kuang,He bo
+Ah Puch,Bastet,Susano,Agni,Anubis,Hera
+Anubis,Achilles,Cu Chulainn,King Arthur,Arachne
+Ao Kuang,Morgan Le Fay,Arachne,Bakasura,Ratatoskr
+Aphrodite,Bacchus,Change,Medusa,Odin,Osiris,Serqet,Sobek
+Baba Yaga,Anubis,Change,King Arthur,Chaac,Aphrodite
+Baron Samedi,Poseidon,Zerus,Achilles,Anubis,Ao Kuang,Apollo
+Change,Cu Chulainn,Gilgamesh
+Chronos,Poseidon,Zerus,Anubis,Da Ji,Fenrir,Loki,Scylla
+Discordia,Awilix,Pele
+Eset,Cu Chulainn,Gilgamesh
+Freya,Neith,Thor,Ullr,Anhur,Bakasura,Heimdallr
+Hades,Zerus,Anubis,Poseidon
+He Bo,Bakasura,Janus,Zerus,Poseidon
+Hel,Agni,Cu Chulainn,Guan Yu,Sobek
+Hera,Agni,Bakasura,Cabrakan,Erlang Shen,Ratatoskr,Ravana
+Janus,Agni,Kukulkan,Ra,Scylla,Aphrodite,Nu Wa
+Kukulkan ,Anubis
+Merlin,Ares,Athena,Ganesha,King Arthur,Susano
+Morgan Le Fay,Anubis,Loki
+Nox,Ah Puch,Persephone,Baron Samedi,Change
+Nu Wa,The Morrigan,Hades,He bo,Merlin,Poseidon,Zeus
+Olorun,Chronos,Danzaburou,Hades,Heimdallr,Hel,Hou Yi
+Persephone,Fenrir,Cabrakan,Ravana,Change
+Poseidon,Arachne,Kali
+Ra,Ymir,Thanatos
+Raijin,The Morrigan,Thor,Bastet,Ganesha,Hera,Pele
+Scylla,Ares,Athena,Fenrir,Ne Zha
+Sol,Kumbhakarna,Kuzenbo
+The Morrigan,Anubis,Change,He bo,Hel
+Thoth,Nox,Ratatoskr,Zhong Kui,Aphrodite,Baron Samedi,Bastet
+Tiamat,Set,Ao Kuang
+Vulcan,Janus
+Zeus,Ao Kuang,Arachne,Loki,Athena
+Zhong Kui,Cerberus,Ah Puch
+Shiva
+Athena
