@@ -32,13 +32,13 @@ Xbalanque,Apollo,Cernunnos,Artemis,Arachne,Bakasura,Hou Yi
 Charybdis,Anubis
 Achilles,Cu Chulainn,Scylla,Ao Kuang,Bakasura,Kali
 Amaterasu ,Chaac,Guan Yu,King Arthur
-Bellona,King Arthur,Agni,Change,Anubis,Sun Wukong
+Bellona,King Arthur,Agni,Chang'e,Anubis,Sun Wukong
 Chaac,Odin,Osiris,Serqet
 Cu Chulainn,Tyr,Ao Kuang,Aphrodite
 Erlang Shen,Amaterasu,Cu Chulainn,Guan Yu,King Arthur
 Gilgamesh,Gilgamesh,Hou Yi
 Guan Yu,Cabrakan,Cthuldu,Cu Chulainn,King Arthur
-Hercules,Chaac,Change
+Hercules,Chaac,Chang'e
 Horus,Ares,King Arthur,Achilles,Amaterasu,Cu Chulainn,Guan Yu
 King Arthur,Achilles,Amaterasu,Cu Chulainn,Guan Yu
 Mulan,Achilles,Amaterasu,Cu Chulainn,Guan Yu,King Arthur
@@ -52,10 +52,10 @@ Agni,Ao Kuang,He bo
 Ah Puch,Bastet,Susano,Agni,Anubis,Hera
 Anubis,Achilles,Cu Chulainn,King Arthur,Arachne
 Ao Kuang,Morgan Le Fay,Arachne,Bakasura,Ratatoskr
-Aphrodite,Bacchus,Change,Medusa,Odin,Osiris,Serqet,Sobek
-Baba Yaga,Anubis,Change,King Arthur,Chaac,Aphrodite
+Aphrodite,Bacchus,Chang'e,Medusa,Odin,Osiris,Serqet,Sobek
+Baba Yaga,Anubis,Chang'e,King Arthur,Chaac,Aphrodite
 Baron Samedi,Poseidon,Zerus,Achilles,Anubis,Ao Kuang,Apollo
-Change,Cu Chulainn,Gilgamesh
+Chang'e,Cu Chulainn,Gilgamesh
 Chronos,Poseidon,Zerus,Anubis,Da Ji,Fenrir,Loki,Scylla
 Discordia,Awilix,Pele
 Eset,Cu Chulainn,Gilgamesh
@@ -68,16 +68,16 @@ Janus,Agni,Kukulkan,Ra,Scylla,Aphrodite,Nu Wa
 Kukulkan ,Anubis
 Merlin,Ares,Athena,Ganesha,King Arthur,Susano
 Morgan Le Fay,Anubis,Loki
-Nox,Ah Puch,Persephone,Baron Samedi,Change
+Nox,Ah Puch,Persephone,Baron Samedi,Chang'e
 Nu Wa,The Morrigan,Hades,He bo,Merlin,Poseidon,Zeus
 Olorun,Chronos,Danzaburou,Hades,Heimdallr,Hel,Hou Yi
-Persephone,Fenrir,Cabrakan,Ravana,Change
+Persephone,Fenrir,Cabrakan,Ravana,Chang'e
 Poseidon,Arachne,Kali
 Ra,Ymir,Thanatos
 Raijin,The Morrigan,Thor,Bastet,Ganesha,Hera,Pele
 Scylla,Ares,Athena,Fenrir,Ne Zha
 Sol,Kumbhakarna,Kuzenbo
-The Morrigan,Anubis,Change,He bo,Hel
+The Morrigan,Anubis,Chang'e,He bo,Hel
 Thoth,Nox,Ratatoskr,Zhong Kui,Aphrodite,Baron Samedi,Bastet
 Tiamat,Set,Ao Kuang
 Vulcan,Janus

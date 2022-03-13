@@ -1,20 +1,21 @@
+from __future__ import annotations
+
 import pickle
-import time
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Protocol
+from subprocess import CREATE_NO_WINDOW
 
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import (
+    ElementClickInterceptedException,
+    TimeoutException,
+)
 from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-
-
-class Match:
-    pass
 
 
 @dataclass
@@ -27,33 +28,34 @@ class GodData:
     def __post_init__(self):
         self.matchups = defaultdict(self.default_value)
 
-    def win_against(self, gods: list[str]):
+    def win_against(self, gods: list[str]) -> None:
         self.total_wins += 1
         for god in gods:
             self.matchups[god][0] += 1
 
-    def lose_against(self, gods: list[str]):
+    def lose_against(self, gods: list[str]) -> None:
         self.total_losses += 1
         for god in gods:
             self.matchups[god][1] += 1
 
-    def default_value(self):
+    def default_value(self) -> tuple[int, int]:
         return [0, 0]
 
     @property
-    def win_rate(self):
+    def win_rate(self) -> float:
         if self.total_wins + self.total_losses == 0:
             return 0
 
         return self.total_wins / (self.total_wins + self.total_losses)
 
     @property
-    def value(self):
+    def value(self) -> float:
         x = min(self.total_wins + self.total_losses, 100)
         if x == 0:
             return 0
 
         return 10 / 7 * x ** 0.5 + self.win_rate * 10
+        # return self.win_rate * min(self.total_wins, 100)
 
     def __lt__(self, other) -> bool:
         return self.value < other.value
@@ -69,12 +71,13 @@ class APIScraperBot:
         show_window: bool = True,
         screen_size: tuple[int, int] = (800, 600),
     ):
-        options = Options()
-
+        self.options = Options()
+        self.path_to_driver = path_to_driver
         if not show_window:
-            options.add_argument("--headless")
-        options.add_argument(f"--window-size={screen_size[0]},{screen_size[1]}")
-        self.driver = Chrome(executable_path=path_to_driver, chrome_options=options)
+            self.options.add_argument("--headless")
+        self.options.add_argument(f"--window-size={screen_size[0]},{screen_size[1]}")
+        self.options.add_argument("--log-level=3")
+        self.driver = None
 
         self.PAGE_LOAD_WAIT_TIME = 60
         self.NEXT_LOAD_WAIT_TIME = 10
@@ -87,16 +90,80 @@ class APIScraperBot:
         self.NEXT_PAGE_CLASS = "next-btn"
         self.PREV_PAGE_CLASS = "prev-btn"
 
-    def load_previous_data(self, filepath) -> dict[str, GodData]:
+    def create_driver(self):
+        chrome_service = ChromeService(self.path_to_driver)
+        chrome_service.creationflags = CREATE_NO_WINDOW
+        return Chrome(
+            service=chrome_service,
+            chrome_options=self.options,
+        )
+
+    def load_previous_data(self, filepath: str) -> tuple[dict[str, GodData], set[str]]:
         try:
             with open(filepath, "rb") as data_file:
-                return pickle.load(data_file)
+                self.output["messages"].append(("Loaded previous data", "normal"))
+                data, prev_seen = pickle.load(data_file)
+                return data, prev_seen
         except FileNotFoundError:
-            return {}, 0
+            self.output["messages"].append(("Creating default data", "normal"))
+            data = {}
+            with open("files/all_gods.txt") as f:
+                for god in f:
+                    god = god.strip()
+                    data[god] = GodData(god)
 
-    def save_data(self, data, latest_match_id: int, filepath: str):
+            prev_seen = set()
+            self.save_data(data, prev_seen, filepath)
+            return data, prev_seen
+
+    def save_data(
+        self, data: dict[str, GodData], seen: set[str], filepath: str
+    ) -> None:
         with open(filepath, "wb") as data_file:
-            pickle.dump([data, latest_match_id], data_file)
+            pickle.dump([data, seen], data_file)
+
+    def find_last_page(self) -> int:
+        self.output["messages"].append(
+            ("Finding out how many pages of data to process", "normal")
+        )
+        self.output["messages"].append(
+            ("Finding out how many matches to process", "normal")
+        )
+        page = 0
+        gods = 0
+        while True:
+            recent_matches_container = WebDriverWait(
+                self.driver, self.PAGE_LOAD_WAIT_TIME
+            ).until(EC.presence_of_element_located((By.XPATH, self.RECENT_GAMES_XPATH)))
+            containers = WebDriverWait(
+                recent_matches_container, self.PAGE_LOAD_WAIT_TIME
+            ).until(
+                EC.presence_of_all_elements_located(
+                    (By.CLASS_NAME, "ind-match-container")
+                )
+            )
+
+            gods += len(containers)
+
+            try:
+                WebDriverWait(self.driver, self.NEXT_LOAD_WAIT_TIME).until(
+                    EC.presence_of_element_located(
+                        (By.CLASS_NAME, self.NEXT_PAGE_CLASS)
+                    )
+                )
+            except TimeoutException:
+                self.output["god_count"] = gods
+                self.output["messages"].append(
+                    (f"Found {page} pages of data with {gods} matches", "normal")
+                )
+                return page
+
+            next_button = self.driver.find_element(By.CLASS_NAME, self.NEXT_PAGE_CLASS)
+            actions = ActionChains(self.driver)
+            actions.move_to_element(next_button).perform()
+            next_button = self.driver.find_element(By.CLASS_NAME, self.NEXT_PAGE_CLASS)
+            next_button.click()
+            page += 1
 
     def move_page(self, page: int) -> bool:
         WebDriverWait(self.driver, self.PAGE_LOAD_WAIT_TIME).until(
@@ -121,7 +188,6 @@ class APIScraperBot:
                 break
 
         for _ in range(page):
-
             try:
                 WebDriverWait(self.driver, self.NEXT_LOAD_WAIT_TIME).until(
                     EC.presence_of_element_located(
@@ -132,8 +198,11 @@ class APIScraperBot:
                 return False
 
             next_button = self.driver.find_element(By.CLASS_NAME, self.NEXT_PAGE_CLASS)
+            actions = ActionChains(self.driver)
+            actions.move_to_element(next_button).perform()
+            next_button = self.driver.find_element(By.CLASS_NAME, self.NEXT_PAGE_CLASS)
             next_button.click()
-            time.sleep(0.1)
+            # time.sleep(0.1)
 
             WebDriverWait(self.driver, self.PAGE_LOAD_WAIT_TIME).until(
                 EC.presence_of_element_located((By.XPATH, self.RECENT_GAMES_XPATH))
@@ -141,16 +210,19 @@ class APIScraperBot:
 
         return True
 
-    def get_matches(self, stop_id: int) -> tuple[int, list[Match]]:
+    def get_matches(self, prev_seen: set[str]) -> set[str]:
+        last_page = self.find_last_page()
         new_page = True
         seen = set()
-        latest_match_id = None
 
         current_page = 0
+        self.output["gods_completed"] = 0
+
         while new_page:
             index = 0
             while True:
                 new_page = self.move_page(current_page)
+
                 recent_matches_container = self.driver.find_element(
                     By.XPATH, self.RECENT_GAMES_XPATH
                 )
@@ -180,25 +252,52 @@ class APIScraperBot:
                     By.CLASS_NAME, "alt--text"
                 )
 
-                actions = ActionChains(self.driver)
-                actions.move_to_element(view_match_button).perform()
-
-                view_match_button.click()
+                try:
+                    actions = ActionChains(self.driver)
+                    actions.move_to_element(view_match_button).perform()
+                    view_match_button = nav_to_match.find_element(
+                        By.CLASS_NAME, "alt--text"
+                    )
+                    view_match_button.click()
+                except ElementClickInterceptedException:
+                    self.output["messages"].append(
+                        ("Stop moving your mouse please :c", "error")
+                    )
+                    continue
 
                 WebDriverWait(self.driver, self.PAGE_LOAD_WAIT_TIME).until(
                     EC.presence_of_element_located((By.CLASS_NAME, self.MATCH_ID_CLASS))
                 )
 
-                match_id = self.driver.find_element(
-                    By.CLASS_NAME, self.MATCH_ID_CLASS
-                ).text
-                if match_id == stop_id:
-                    return
+                while True:
+                    match_id = self.driver.find_element(
+                        By.CLASS_NAME, self.MATCH_ID_CLASS
+                    ).text
+                    if match_id:
+                        break
 
-                if match_id not in seen:
+                if match_id in prev_seen:
+                    self.output["messages"].append((f"Found old {match_id}", "normal"))
+                    self.output["messages"].append(("Stopping scrape", "normal"))
+                    self.driver.quit()
+                    return seen
+
+                if match_id == "":
+                    print(current_page, index, len(containers))
+                    self.driver.back()
+                    continue
+
+                if match_id and match_id not in seen:
+                    self.output["messages"].append(
+                        (f"New match found: {match_id}", "normal")
+                    )
+                    self.output["messages"].append(
+                        (
+                            f"You {'lost' if loss else 'won'} as {god_name}",
+                            "error" if loss else "normal",
+                        )
+                    )
                     seen.add(match_id)
-                    if latest_match_id is None:
-                        latest_match_id = match_id
 
                     team_one_container = WebDriverWait(
                         self.driver, self.PAGE_LOAD_WAIT_TIME
@@ -244,42 +343,69 @@ class APIScraperBot:
                         self.data[god_name].lose_against(enemy_gods)
                     else:
                         self.data[god_name].win_against(enemy_gods)
+                else:
+                    if not new_page:
+                        self.output["messages"].append(("Done scraping!", "normal"))
+                        break
+                    self.driver.back()
+                    continue
 
-                time.sleep(1)
+                # time.sleep(1)
 
                 self.driver.back()
 
                 index += 1
+                self.output["gods_completed"] += 1
                 WebDriverWait(self.driver, self.PAGE_LOAD_WAIT_TIME).until(
                     EC.presence_of_element_located((By.XPATH, self.RECENT_GAMES_XPATH))
                 )
 
             current_page += 1
+            if current_page > last_page:
+                self.output["messages"].append(("Done scraping!", "normal"))
+                break
 
         self.driver.quit()
 
-        return latest_match_id if latest_match_id is not None else stop_id
+        return seen
 
     def get_player_data(
-        self, smitesource_url: str, filepath: str, update_data: bool = True
-    ) -> dict[str, GodData]:
-        self.data, latest_match_id = self.load_previous_data(filepath)
+        self,
+        smitesource_url: str,
+        filepath: str,
+        output: dict,
+        update_data: bool = True,
+    ) -> None:
+        self.output = output
+        self.output["messages"] = []
+        self.data, prev_seen = self.load_previous_data(filepath)
 
         if not update_data:
-            return self.data
+            self.output["data"] = self.data
+            self.output["messages"].append(("Done scraping!", "normal"))
+            return
 
+        self.driver = self.create_driver()
         self.driver.get(smitesource_url)
+        self.output["messages"].append(("Looking for smitesource profile", "normal"))
 
         try:
             WebDriverWait(self.driver, self.PAGE_LOAD_WAIT_TIME).until(
                 EC.presence_of_element_located((By.XPATH, self.IMG_AVATAR_XPATH))
             )
+            self.output["messages"].append(("Found smitesource profile", "normal"))
 
         except TimeoutException:
-            print("Couldn't find player profile")
-            return {}
+            self.output["messages"].append(
+                ("Couldn't find smitesource profile", "error")
+            )
+            self.output["messages"].append(
+                ("Make sure you don't have a private profile", "warning")
+            )
+            return
 
-        latest_match_id = self.get_matches(latest_match_id)
-        self.save_data(self.data, latest_match_id, filepath)
+        new_seen = self.get_matches(prev_seen)
+        self.save_data(self.data, prev_seen | new_seen, filepath)
+        self.output["messages"].append((f"Saved data to {filepath}", "normal"))
 
-        return self.data
+        self.output["data"] = self.data
